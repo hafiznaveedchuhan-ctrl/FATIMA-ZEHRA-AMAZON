@@ -13,7 +13,7 @@ JWT_ALGORITHM = "HS256"
 if len(JWT_SECRET) < 32:
     raise ValueError("JWT_SECRET must be at least 32 characters (set in .env)")
 
-_security = HTTPBearer()
+_security = HTTPBearer(auto_error=False)
 
 
 def _decode(token: str) -> Optional[dict]:
@@ -24,9 +24,15 @@ def _decode(token: str) -> Optional[dict]:
 
 
 def get_current_user_id(
-    creds: HTTPAuthorizationCredentials = Depends(_security),
+    creds: Optional[HTTPAuthorizationCredentials] = Depends(_security),
 ) -> int:
     """Extract verified user_id from Bearer JWT."""
+    if creds is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authorization header required",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     payload = _decode(creds.credentials)
     if payload is None:
         raise HTTPException(

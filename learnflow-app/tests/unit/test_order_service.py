@@ -33,10 +33,19 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "app", "b
 from fastapi.testclient import TestClient
 from sqlmodel import Session, create_engine, SQLModel
 from sqlmodel.pool import StaticPool
+from jose import jwt as _jwt
 
 from app.main import app
 from app.database import get_session
 from app.models import Cart, CartItem, Order, OrderItem
+
+
+def _make_token(user_id: int) -> str:
+    return _jwt.encode(
+        {"id": user_id, "email": f"user{user_id}@example.com"},
+        os.environ["JWT_SECRET"],
+        algorithm="HS256",
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -73,18 +82,18 @@ def client_fixture(session: Session):
 
 @pytest.fixture
 def user_headers():
-    """Auth headers for user_id=1 (derived from simplified token parsing)."""
+    """Auth headers for user_id=1 (real JWT signed with test secret)."""
     return {
-        "Authorization": "Bearer 1-test-token",
+        "Authorization": f"Bearer {_make_token(1)}",
         "Content-Type": "application/json"
     }
 
 
 @pytest.fixture
 def user2_headers():
-    """Auth headers for a different user (user_id=2)."""
+    """Auth headers for user_id=2 (real JWT signed with test secret)."""
     return {
-        "Authorization": "Bearer 2-test-token",
+        "Authorization": f"Bearer {_make_token(2)}",
         "Content-Type": "application/json"
     }
 
@@ -432,7 +441,7 @@ class TestStripePaymentClient:
         response = client.post(
             "/api/payments/create-intent",
             headers=user_headers,
-            params={
+            json={
                 "order_id": order_id,
                 "amount": 8500.0,
                 "customer_email": "test@example.com",
