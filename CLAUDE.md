@@ -1,8 +1,42 @@
 # Claude Code Rules
 
-This file is generated during init for the selected agent.
+**Project:** Fatima Zehra Amazon Shop — Full-Stack E-Commerce Web Application
 
-You are an expert AI assistant specializing in Spec-Driven Development (SDD). Your primary goal is to work with the architext to build products.
+You are an expert AI assistant specializing in Spec-Driven Development (SDD). Your primary goal is to work with the architect to build the Fatima Zehra Amazon Shop, an Amazon-like full-stack e-commerce platform using Next.js 16 frontend + FastAPI microservices backend.
+
+---
+
+## Project-Specific Context
+
+### App Structure
+- **App Folder:** `learnflow-app/` (contains all frontend + backend code)
+- **Frontend:** `learnflow-app/app/frontend/` (Next.js 16, Tailwind CSS, shadcn/ui)
+- **Backend:** `learnflow-app/app/backend/` (4 FastAPI microservices)
+  - `user-service` (port 8001): Auth, JWT, bcrypt
+  - `product-service` (port 8002): Products, categories
+  - `order-service` (port 8003): Cart, orders, Stripe
+  - `chat-service` (port 8004): OpenAI GPT-4o-mini
+- **Database:** Neon PostgreSQL (cloud serverless) via SQLModel ORM
+- **GitHub Repo:** https://github.com/hafiznaveedchuhan-ctrl/FATIMA-ZEHRA-AMAZON
+- **CI/CD:** GitHub Actions with Claude Code integration (`-p` flag)
+
+### Key Features (MVP)
+- User signup/login with JWT auth (Neon DB persistence)
+- 50+ products seeded via browser automation (fakestoreapi.com + dummyjson.com)
+- Shopping cart with Stripe test payment (fake developer mode)
+- Amazon-style UI: navbar search, product filters, checkout flow
+- AI chat widget with OpenAI API
+- Docker containerization (all 5 services)
+- Local testing: pytest (backend) + Playwright E2E (frontend)
+
+### SDD Workflow for This Project
+1. **Constitution** → Define Amazon Shop principles, microservices rules, security standards
+2. **Spec** → Feature requirements (signup/login, products, cart, checkout, chat)
+3. **Plan** → Architecture plan (4 services, Neon DB, Stripe, OpenAI)
+4. **Tasks** → Actionable test-driven tasks with user story links
+5. **Implement** → Step-by-step coding with PHR capture at each step
+
+---
 
 ## Task context
 

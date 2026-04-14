@@ -1,0 +1,395 @@
+# ============================================================================
+# Environment & Configuration
+# ============================================================================
+
+# Environment variables (NEVER commit these!)
+.env
+.env.local
+.env.*.local
+.env.production
+config/.env
+config/env/*.env
+
+# Secrets and credentials
+*.key
+*.pem
+*.p8
+*.p12
+*.pfx
+secrets.json
+credentials.json
+service-account.json
+
+# ============================================================================
+# Python
+# ============================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+# Note: /lib/ removed from ignore — frontend uses lib/ for API client
+# Python lib/ in venv is excluded via venv/ rule below
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+.coverage.json
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# ============================================================================
+# Node.js / JavaScript
+# ============================================================================
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Production
+dist/
+.next/
+out/
+build/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ============================================================================
+# Docker
+# ============================================================================
+
+.docker/
+docker-compose.override.yml
+.dockerignore
+
+# ============================================================================
+# Kubernetes
+# ============================================================================
+
+# Generated manifests
+deploy/kubernetes/generated/
+deploy/helm/*/generated/
+
+# kubeconfig files
+kubeconfig
+.kube/
+
+# ============================================================================
+# Databases
+# ============================================================================
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
+postgres.log
+mysql.log
+
+# Database backups
+*.sql.gz
+*.sql.zip
+database/backups/*.sql
+
+# ============================================================================
+# Logs
+# ============================================================================
+
+logs/
+*.log
+*.log.*
+debug.log
+
+# ============================================================================
+# IDE & Editor
+# ============================================================================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+*~
+.swp
+.swo
+
+# Emacs
+*~
+\#*#
+.\#*
+
+# Atom
+.atom/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+.Trash-*
+
+# ============================================================================
+# OS Files
+# ============================================================================
+
+Thumbs.db
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# ============================================================================
+# Project-Specific
+# ============================================================================
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Generated files
+dist/
+build/
+*.egg-info/
+
+# Build artifacts
+.build/
+.cache/
+.coverage*
+
+# Local test data
+test_data/
+fixtures/
+
+# Uploaded files (if any)
+uploads/
+files/
+
+# ============================================================================
+# Documentation
+# ============================================================================
+
+# Built documentation
+docs/_build/
+site/
+
+# ============================================================================
+# Deployment & Infrastructure
+# ============================================================================
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Ansible
+*.retry
+inventory/hosts.local
+
+# Cloud provider credentials
+gcloud-key.json
+aws-credentials.csv
+azure-credentials.json
+
+# ============================================================================
+# IMPORTANT: Files that MUST NOT be committed
+# ============================================================================
+
+# ABSOLUTELY NEVER COMMIT:
+# - .env files (credentials, API keys, secrets)
+# - Credentials or keys
+# - Private data
+# - Test data with real credentials
+# - API keys, tokens, passwords
+
+# ============================================================================
+# Recommended: File Patterns to Keep in Git
+# ============================================================================
+
+# DO commit:
+!.env.example                    # Keep example file
+!.env.staging.example            # Keep staging example
+!.env.production.example         # Keep production example
+!.github/                        # Keep GitHub workflows
+!.gitignore                      # Keep this file
+!.gitattributes                  # Keep git attributes
+!docs/                           # Keep documentation
+!README.md                       # Keep README
+!CLAUDE.md                       # Keep CLAUDE reference
+!CONSTITUTION.md                 # Keep constitution
+!LICENSE                         # Keep license
+
+# ============================================================================
+# Git LFS (Large File Storage) - Optional
+# ============================================================================
+
+# Uncomment if using Git LFS:
+# *.psd
+# *.zip
+# *.rar
+# *.7z
+# *.iso
+# *.exe
+
+# Track these files with Git LFS:
+# *.png filter=lfs diff=lfs merge=lfs -text
+# *.jpg filter=lfs diff=lfs merge=lfs -text
+# *.mov filter=lfs diff=lfs merge=lfs -text
+# *.mp4 filter=lfs diff=lfs merge=lfs -text
+
+# System & IDE
+
+.clasp.json
