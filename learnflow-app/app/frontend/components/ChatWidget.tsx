@@ -15,7 +15,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Hello! 👋 Welcome to Fatima Zehra Boutique. How can I help you today? I can help you find the perfect suit!",
+      text: "Hello! 👋 Welcome to Fatima Zehra Amazon Shop. How can I help you find the right product today?",
       sender: "assistant",
       timestamp: new Date(),
     },

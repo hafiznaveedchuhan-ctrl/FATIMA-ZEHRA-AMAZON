@@ -3,38 +3,37 @@
 from datetime import datetime
 from decimal import Decimal
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Header, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from sqlalchemy import text
 from sqlmodel import Session, select, func
 import json
 
 from .models import (
     Cart, CartItem, Order, OrderItem,
     AddToCartRequest, UpdateCartItemRequest, CheckoutRequest,
+    CreatePaymentIntentRequest,
     CartResponse, CartItemResponse, OrderResponse, OrderItemResponse
 )
 from .database import get_session
 from .stripe_client import StripePaymentClient, process_stripe_webhook
+from .auth import get_current_user_id
 
 router = APIRouter(tags=["orders"])
 
 
-def get_user_id_from_header(authorization: Optional[str] = Header(None)) -> int:
-    """Extract user_id from JWT token header (simplified for demo)"""
-    # In production, decode JWT token to get user_id
-    # For now, we'll use a simple header
-    if authorization:
-        try:
-            parts = authorization.split()
-            if len(parts) == 2 and parts[0].lower() == "bearer":
-                # In production: decode JWT from parts[1]
-                # For demo: extract from custom header
-                return int(parts[1].split("-")[0]) if "-" in parts[1] else 1
-        except Exception:
-            pass
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Missing or invalid authorization header"
-    )
+def get_user_id_from_header(user_id: int = Depends(get_current_user_id)) -> int:
+    """Back-compat alias — resolves the verified JWT user id."""
+    return user_id
+
+
+def _lookup_product_name(session: Session, product_id: int) -> str:
+    """Fetch product name directly from the shared Neon DB (products table)."""
+    row = session.exec(
+        text("SELECT name FROM products WHERE id = :pid").bindparams(pid=product_id)
+    ).first()
+    if row:
+        return row[0]
+    return f"Product #{product_id}"
 
 
 # Cart Endpoints
@@ -267,12 +266,12 @@ async def checkout(
     session.commit()
     session.refresh(order)
 
-    # Create order items
+    # Create order items (look up real product name from shared DB)
     for cart_item in cart.items:
         order_item = OrderItem(
             order_id=order.id,
             product_id=cart_item.product_id,
-            product_name=f"Product {cart_item.product_id}",
+            product_name=_lookup_product_name(session, cart_item.product_id),
             quantity=cart_item.quantity,
             price=cart_item.price
         )
@@ -323,20 +322,10 @@ async def get_order(
 
 # Payment Endpoints - Stripe Integration
 
-class CreatePaymentIntentRequest:
-    """Request model for payment intent creation"""
-    order_id: int
-    amount: float
-    customer_email: str
-    customer_name: str
-
 
 @router.post("/api/payments/create-intent")
 async def create_payment_intent(
-    order_id: int,
-    amount: float,
-    customer_email: str,
-    customer_name: str,
+    payload: CreatePaymentIntentRequest,
     user_id: int = Depends(get_user_id_from_header),
     session: Session = Depends(get_session)
 ):
@@ -349,7 +338,7 @@ async def create_payment_intent(
     try:
         # Verify order belongs to user
         order = session.exec(
-            select(Order).where(Order.id == order_id)
+            select(Order).where(Order.id == payload.order_id)
         ).first()
 
         if not order or order.user_id != user_id:
@@ -360,11 +349,11 @@ async def create_payment_intent(
 
         # Create payment intent
         payment_intent = StripePaymentClient.create_payment_intent(
-            amount_pkr=amount,
-            order_id=order_id,
-            customer_email=customer_email,
-            customer_name=customer_name,
-            description=f"Order #{order_id} for {customer_name}"
+            amount_pkr=payload.amount,
+            order_id=payload.order_id,
+            customer_email=payload.customer_email,
+            customer_name=payload.customer_name,
+            description=f"Order #{payload.order_id} for {payload.customer_name}"
         )
 
         # Update order with payment intent ID
@@ -381,6 +370,8 @@ async def create_payment_intent(
             "currency": payment_intent["currency"]
         }
 
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

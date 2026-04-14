@@ -12,7 +12,7 @@ init_db()
 
 # Create FastAPI app
 app = FastAPI(
-    title="Order Service - Fatima Zehra Boutique",
+    title="Order Service - Fatima Zehra Amazon Shop",
     description="Shopping Cart and Order Management",
     version="1.0.0",
     docs_url="/docs",

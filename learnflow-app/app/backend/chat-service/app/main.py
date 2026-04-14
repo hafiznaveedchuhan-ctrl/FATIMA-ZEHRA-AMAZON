@@ -12,7 +12,7 @@ init_db()
 
 # Create FastAPI app
 app = FastAPI(
-    title="Chat Service - Fatima Zehra Boutique",
+    title="Chat Service - Fatima Zehra Amazon Shop",
     description="AI Chat Assistant with OpenAI Integration",
     version="1.0.0",
     docs_url="/docs",

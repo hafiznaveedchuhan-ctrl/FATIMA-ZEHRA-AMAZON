@@ -147,7 +147,7 @@ export default function Footer() {
         {/* 4. Copyright */}
         <div className="mt-12 text-center">
           <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.4em]">
-            © {new Date().getFullYear()} Fatima Zehra Boutique. Crafted for Excellence.
+            © {new Date().getFullYear()} Fatima Zehra Amazon Shop. All rights reserved.
           </p>
         </div>
       </div>

@@ -92,6 +92,14 @@ class CheckoutRequest(SQLModel):
     shipping_address: str
 
 
+class CreatePaymentIntentRequest(SQLModel):
+    """Create Stripe PaymentIntent request body"""
+    order_id: int
+    amount: float = Field(gt=0)
+    customer_email: str
+    customer_name: str
+
+
 # Response Models
 class CartItemResponse(SQLModel):
     """Cart item response"""

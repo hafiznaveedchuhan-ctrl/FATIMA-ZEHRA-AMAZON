@@ -109,8 +109,9 @@ async def list_products(
     if max_price is not None:
         query = query.where(Product.price <= max_price)
 
-    # Get total count
-    total = session.exec(select(func.count(Product.id)).select_from(Product)).one()
+    # Get total count using the SAME filters as the main query (preserves accuracy for pagination)
+    count_query = select(func.count()).select_from(query.subquery())
+    total = session.exec(count_query).one()
 
     # Apply pagination
     products = session.exec(query.offset(skip).limit(limit)).all()
