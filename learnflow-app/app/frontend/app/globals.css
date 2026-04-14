@@ -1,0 +1,728 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   CSS VARIABLES - BRAND THEME
+   ============================================ */
+@layer base {
+  :root {
+    /* Background & Foreground */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    /* Card */
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    /* Brand Colors - Pink */
+    --primary: 330 80% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - Purple */
+    --secondary: 270 70% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Accent - Gold */
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Muted */
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    /* Destructive */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Border & Input */
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 330 80% 60%;
+
+    /* Radius */
+    --radius: 0.75rem;
+
+    /* Fonts */
+    --font-playfair: "Playfair Display", serif;
+    --font-inter: "Inter", sans-serif;
+
+    /* Brand Specific */
+    --brand-pink: 330 80% 60%;
+    --brand-purple: 270 70% 55%;
+    --brand-gold: 38 92% 50%;
+    --brand-pink-light: 330 80% 95%;
+    --brand-purple-light: 270 70% 95%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 330 80% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 270 70% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 330 80% 60%;
+  }
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-inter);
+  }
+
+  /* Typography */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-playfair);
+    @apply tracking-tight;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl font-bold;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl font-semibold;
+  }
+
+  h4 {
+    @apply text-xl md:text-2xl font-semibold;
+  }
+
+  p {
+    @apply leading-relaxed;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-pink-500/30 text-pink-900;
+  }
+
+  .dark ::selection {
+    @apply bg-pink-500/30 text-pink-100;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-pink-400 to-purple-500 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply from-pink-500 to-purple-600;
+  }
+}
+
+/* ============================================
+   COMPONENT UTILITIES
+   ============================================ */
+@layer components {
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-amber-500;
+  }
+
+  .gradient-text-pink {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-pink-600;
+  }
+
+  .gradient-text-elegant {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-600 to-pink-500;
+  }
+
+  /* Gradient Backgrounds */
+  .gradient-bg-primary {
+    @apply bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500;
+  }
+
+  .gradient-bg-hero {
+    @apply bg-gradient-to-br from-pink-50 via-purple-50 to-amber-50;
+  }
+
+  .gradient-bg-hero-dark {
+    @apply bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900;
+  }
+
+  .gradient-bg-card {
+    @apply bg-gradient-to-br from-white to-pink-50/50;
+  }
+
+  .gradient-bg-footer {
+    @apply bg-gradient-to-br from-gray-900 via-gray-900 to-purple-900/30;
+  }
+
+  /* Glass Morphism */
+  .glass {
+    @apply bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg;
+  }
+
+  .glass-card {
+    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-white/20 dark:border-gray-700/20;
+  }
+
+  .glass-nav {
+    @apply bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-lg shadow-pink-500/5;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3
+           bg-gradient-to-r from-pink-500 to-purple-600
+           text-white font-semibold rounded-full
+           shadow-lg shadow-pink-500/30
+           hover:shadow-xl hover:shadow-pink-500/40
+           hover:from-pink-600 hover:to-purple-700
+           transform hover:-translate-y-0.5
+           transition-all duration-300 ease-out;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3
+           bg-white dark:bg-gray-800
+           text-gray-900 dark:text-white font-semibold rounded-full
+           border-2 border-pink-500
+           hover:bg-pink-50 dark:hover:bg-pink-950
+           hover:border-pink-600
+           transform hover:-translate-y-0.5
+           transition-all duration-300 ease-out;
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center justify-center px-6 py-3
+           bg-gradient-to-r from-amber-400 to-amber-600
+           text-white font-semibold rounded-full
+           shadow-lg shadow-amber-500/30
+           hover:shadow-xl hover:shadow-amber-500/40
+           hover:from-amber-500 hover:to-amber-700
+           transform hover:-translate-y-0.5
+           transition-all duration-300 ease-out;
+  }
+
+  /* Cards */
+  .card-hover {
+    @apply transition-all duration-300 ease-out
+           hover:shadow-2xl hover:shadow-pink-500/10
+           hover:-translate-y-2;
+  }
+
+  .card-product {
+    @apply bg-white dark:bg-gray-800 rounded-2xl overflow-hidden
+           shadow-lg shadow-gray-200/50 dark:shadow-gray-900/50
+           transition-all duration-500 ease-out
+           hover:shadow-2xl hover:shadow-pink-500/20
+           hover:-translate-y-3;
+  }
+
+  /* Image Effects */
+  .img-zoom {
+    @apply transition-transform duration-500 ease-out;
+  }
+
+  .img-zoom:hover {
+    @apply scale-110;
+  }
+
+  /* Section Styling */
+  .section-padding {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+
+  .container-wide {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Input Styles */
+  .input-elegant {
+    @apply w-full px-4 py-3 rounded-xl
+           bg-white dark:bg-gray-800
+           border-2 border-gray-200 dark:border-gray-700
+           focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20
+           transition-all duration-300
+           placeholder:text-gray-400;
+  }
+
+  /* Badge */
+  .badge-pink {
+    @apply inline-flex items-center px-3 py-1 rounded-full
+           bg-pink-100 dark:bg-pink-900/30
+           text-pink-600 dark:text-pink-400
+           text-sm font-medium;
+  }
+
+  .badge-gold {
+    @apply inline-flex items-center px-3 py-1 rounded-full
+           bg-amber-100 dark:bg-amber-900/30
+           text-amber-600 dark:text-amber-400
+           text-sm font-medium;
+  }
+
+  /* Dividers */
+  .divider-gradient {
+    @apply h-px bg-gradient-to-r from-transparent via-pink-500 to-transparent;
+  }
+
+  /* Chat Widget Styles */
+  .chat-bubble-user {
+    @apply bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-2xl rounded-br-md;
+  }
+
+  .chat-bubble-assistant {
+    @apply bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-2xl rounded-bl-md;
+  }
+}
+
+/* ============================================
+   ANIMATIONS & KEYFRAMES
+   ============================================ */
+@layer utilities {
+  /* Fade In */
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in-down {
+    animation: fadeInDown 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in-left {
+    animation: fadeInLeft 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in-right {
+    animation: fadeInRight 0.6s ease-out forwards;
+  }
+
+  /* Scale */
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+  }
+
+  /* Slide */
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+
+  .animate-slide-down {
+    animation: slideDown 0.5s ease-out forwards;
+  }
+
+  /* Float */
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Pulse Glow */
+  .animate-pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  /* Shimmer */
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+    background-size: 200% 100%;
+  }
+
+  /* Spin Slow */
+  .animate-spin-slow {
+    animation: spin 8s linear infinite;
+  }
+
+  /* Bounce Gentle */
+  .animate-bounce-gentle {
+    animation: bounceGentle 2s ease-in-out infinite;
+  }
+
+  /* Typing Indicator */
+  .animate-typing {
+    animation: typing 1.4s ease-in-out infinite;
+  }
+
+  /* Gradient Flow */
+  .animate-gradient {
+    animation: gradientFlow 3s ease infinite;
+    background-size: 200% 200%;
+  }
+
+  /* Appear */
+  .animate-appear {
+    animation: appear 0.3s ease-out forwards;
+  }
+
+  /* Wiggle */
+  .animate-wiggle {
+    animation: wiggle 0.5s ease-in-out;
+  }
+
+  /* Stagger Delays */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+  .delay-600 { animation-delay: 600ms; }
+  .delay-700 { animation-delay: 700ms; }
+  .delay-800 { animation-delay: 800ms; }
+}
+
+/* Keyframe Definitions */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(236, 72, 153, 0.6);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes bounceGentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes typing {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-5px); }
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   HOVER EFFECTS
+   ============================================ */
+@layer utilities {
+  /* Hover Lift */
+  .hover-lift {
+    @apply transition-transform duration-300 ease-out hover:-translate-y-1;
+  }
+
+  /* Hover Grow */
+  .hover-grow {
+    @apply transition-transform duration-300 ease-out hover:scale-105;
+  }
+
+  /* Hover Glow */
+  .hover-glow {
+    @apply transition-shadow duration-300 ease-out hover:shadow-lg hover:shadow-pink-500/25;
+  }
+
+  /* Hover Glow Gold */
+  .hover-glow-gold {
+    @apply transition-shadow duration-300 ease-out hover:shadow-lg hover:shadow-amber-500/25;
+  }
+
+  /* Link Underline */
+  .link-underline {
+    @apply relative;
+  }
+
+  .link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-500
+           transition-all duration-300 ease-out;
+  }
+
+  .link-underline:hover::after {
+    @apply w-full;
+  }
+
+  /* Icon Rotate */
+  .hover-rotate {
+    @apply transition-transform duration-300 ease-out;
+  }
+
+  .hover-rotate:hover {
+    @apply rotate-12;
+  }
+}
+
+/* ============================================
+   SPECIAL EFFECTS
+   ============================================ */
+
+/* Premium Border Styles */
+.border-premium {
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, #ec4899, #a855f7) border-box;
+  border: 2px solid transparent;
+}
+
+.dark .border-premium {
+  background: linear-gradient(theme('colors.slate.800'), theme('colors.slate.800')) padding-box,
+              linear-gradient(135deg, #ec4899, #a855f7) border-box;
+  border: 2px solid transparent;
+}
+
+/* Gradient Border */
+.gradient-border {
+  position: relative;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, #EC4899, #9333EA, #F59E0B) border-box;
+  border: 2px solid transparent;
+}
+
+.dark .gradient-border {
+  background: linear-gradient(theme('colors.gray.800'), theme('colors.gray.800')) padding-box,
+              linear-gradient(135deg, #EC4899, #9333EA, #F59E0B) border-box;
+}
+
+/* Elegant Borders */
+.border-elegant {
+  @apply border-2 border-pink-200 dark:border-pink-800/50;
+}
+
+.border-elegant-purple {
+  @apply border-2 border-purple-200 dark:border-purple-800/50;
+}
+
+.border-subtle {
+  @apply border border-slate-200 dark:border-slate-700/50;
+}
+
+.border-solid-pink {
+  @apply border-2 border-pink-500;
+}
+
+.border-solid-purple {
+  @apply border-2 border-purple-500;
+}
+
+/* Card Borders */
+.card-border {
+  @apply rounded-xl border-2 border-slate-100 dark:border-slate-700/30 shadow-sm;
+}
+
+.card-border-pink {
+  @apply rounded-xl border-2 border-pink-200 dark:border-pink-800/30 shadow-sm;
+}
+
+/* Shimmer Background */
+.shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    rgba(236, 72, 153, 0.1) 0%,
+    rgba(147, 51, 234, 0.1) 25%,
+    rgba(245, 158, 11, 0.1) 50%,
+    rgba(147, 51, 234, 0.1) 75%,
+    rgba(236, 72, 153, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Loading Skeleton */
+.skeleton {
+  @apply bg-gray-200 dark:bg-gray-700 rounded animate-pulse;
+}
+
+/* Overlay Gradient */
+.overlay-gradient {
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.3) 50%,
+    transparent 100%
+  );
+}
+
+/* Text Shadow */
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.text-shadow-lg {
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   RESPONSIVE UTILITIES
+   ============================================ */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

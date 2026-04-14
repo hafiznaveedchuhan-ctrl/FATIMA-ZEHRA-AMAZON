@@ -1,0 +1,171 @@
+# Railway Configuration for Production Deployment
+# Men's Boutique E-Commerce Platform
+
+# Project configuration
+[project]
+name = "reusable-shop-prod"
+description = "Men's Boutique E-Commerce Platform Production"
+environment = "production"
+
+# Services configuration
+[services]
+
+[services.postgres]
+name = "PostgreSQL Database"
+image = "postgres:15-alpine"
+plan = "standard"
+environment = {
+  POSTGRES_DB = "boutique_shop_prod",
+  POSTGRES_USER = "boutique_admin",
+  POSTGRES_PASSWORD = "${{ secrets.POSTGRES_PASSWORD }}"
+}
+volumes = [
+  { mount_path = "/var/lib/postgresql/data", size = "50GB" }
+]
+healthCheck = {
+  path = "/health",
+  interval = 30,
+  timeout = 10
+}
+
+[services.qdrant]
+name = "Qdrant Vector Database"
+image = "qdrant/qdrant:latest"
+plan = "standard"
+environment = {
+  QDRANT_HTTP_APIKEY = "${{ secrets.QDRANT_API_KEY }}",
+  QDRANT_READ_ONLY_API_KEY = "${{ secrets.QDRANT_READ_ONLY_KEY }}"
+}
+volumes = [
+  { mount_path = "/qdrant/storage", size = "100GB" }
+]
+ports = [6333]
+
+[services.user-service]
+name = "User Service"
+dockerfile = "./app/backend/user-service/Dockerfile"
+plan = "standard"
+replicas = 2
+memory = "512MB"
+cpu = 0.25
+environment = {
+  DATABASE_URL = "${{ services.postgres.DATABASE_URL }}",
+  JWT_SECRET = "${{ secrets.JWT_SECRET }}",
+  JWT_EXPIRATION = "24",
+  ENVIRONMENT = "production",
+  SENTRY_DSN = "${{ secrets.SENTRY_DSN }}"
+}
+healthCheck = {
+  path = "/health",
+  interval = 30,
+  timeout = 10
+}
+
+[services.product-service]
+name = "Product Service"
+dockerfile = "./app/backend/product-service/Dockerfile"
+plan = "standard"
+replicas = 2
+memory = "512MB"
+cpu = 0.25
+environment = {
+  DATABASE_URL = "${{ services.postgres.DATABASE_URL }}",
+  ENVIRONMENT = "production",
+  SENTRY_DSN = "${{ secrets.SENTRY_DSN }}"
+}
+healthCheck = {
+  path = "/health",
+  interval = 30,
+  timeout = 10
+}
+
+[services.order-service]
+name = "Order Service"
+dockerfile = "./app/backend/order-service/Dockerfile"
+plan = "standard"
+replicas = 2
+memory = "512MB"
+cpu = 0.25
+environment = {
+  DATABASE_URL = "${{ services.postgres.DATABASE_URL }}",
+  STRIPE_SECRET_KEY = "${{ secrets.STRIPE_SECRET_KEY }}",
+  STRIPE_WEBHOOK_SECRET = "${{ secrets.STRIPE_WEBHOOK_SECRET }}",
+  SENDGRID_API_KEY = "${{ secrets.SENDGRID_API_KEY }}",
+  PRODUCT_SERVICE_URL = "${{ services.product-service.URL }}",
+  ORDER_SERVICE_URL = "${{ services.order-service.URL }}",
+  ENVIRONMENT = "production",
+  SENTRY_DSN = "${{ secrets.SENTRY_DSN }}"
+}
+healthCheck = {
+  path = "/health",
+  interval = 30,
+  timeout = 10
+}
+
+[services.chat-service]
+name = "Chat Service with RAG"
+dockerfile = "./app/backend/chat-service/Dockerfile"
+plan = "standard"
+replicas = 2
+memory = "1024MB"
+cpu = 0.5
+environment = {
+  DATABASE_URL = "${{ services.postgres.DATABASE_URL }}",
+  QDRANT_HOST = "${{ services.qdrant.HOST }}",
+  QDRANT_PORT = "6333",
+  QDRANT_API_KEY = "${{ secrets.QDRANT_API_KEY }}",
+  OPENAI_API_KEY = "${{ secrets.OPENAI_API_KEY }}",
+  ENVIRONMENT = "production",
+  SENTRY_DSN = "${{ secrets.SENTRY_DSN }}"
+}
+healthCheck = {
+  path = "/health",
+  interval = 30,
+  timeout = 10
+}
+
+[services.api-gateway]
+name = "API Gateway (Nginx)"
+dockerfile = "./docker/Dockerfile.nginx"
+plan = "standard"
+replicas = 2
+memory = "256MB"
+cpu = 0.25
+environment = {
+  USER_SERVICE_URL = "${{ services.user-service.URL }}",
+  PRODUCT_SERVICE_URL = "${{ services.product-service.URL }}",
+  ORDER_SERVICE_URL = "${{ services.order-service.URL }}",
+  CHAT_SERVICE_URL = "${{ services.chat-service.URL }}"
+}
+ports = [80, 443]
+healthCheck = {
+  path = "/health",
+  interval = 30,
+  timeout = 10
+}
+
+# Domain configuration
+[domain]
+primary = "yourdomain.com"
+ssl_certificate = "auto"
+redirect_http_to_https = true
+
+# Monitoring and logging
+[monitoring]
+sentry_dsn = "${{ secrets.SENTRY_DSN }}"
+log_level = "INFO"
+trace_sample_rate = 0.1
+
+# Scaling policy
+[scaling]
+auto_scale_enabled = true
+min_replicas = 2
+max_replicas = 5
+cpu_threshold = 70
+memory_threshold = 80
+
+# Backup configuration
+[backups]
+enabled = true
+frequency = "daily"
+retention_days = 30

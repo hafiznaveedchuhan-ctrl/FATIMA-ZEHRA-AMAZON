@@ -1,0 +1,115 @@
+version: '3.8'
+
+services:
+  # 1. Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: boutique-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-neondb_owner}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-neondb}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - boutique-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-neondb_owner}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 2. Vector DB
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: boutique-qdrant
+    restart: always
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - boutique-network
+
+  # 3. Backend Microservices
+  user-service:
+    build:
+      context: ./app/backend/user-service
+    container_name: boutique-user-service
+    environment:
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
+    networks:
+      - boutique-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  product-service:
+    build:
+      context: ./app/backend/product-service
+    container_name: boutique-product-service
+    networks:
+      - boutique-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  order-service:
+    build:
+      context: ./app/backend/order-service
+    container_name: boutique-order-service
+    environment:
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
+    networks:
+      - boutique-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  chat-service:
+    build:
+      context: ./app/backend/chat-service
+    container_name: boutique-chat-service
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    networks:
+      - boutique-network
+    depends_on:
+      - qdrant
+
+  # 4. Frontend (Next.js)
+  frontend:
+    build:
+      context: ./app/frontend
+    container_name: boutique-frontend
+    networks:
+      - boutique-network
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+      - chat-service
+
+  # 5. NGINX Gateway
+  nginx:
+    image: nginx:alpine
+    container_name: boutique-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/prod.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - boutique-network
+    depends_on:
+      - frontend
+    restart: always
+
+volumes:
+  postgres_data:
+  qdrant_data:
+
+networks:
+  boutique-network:
+    name: boutique-network
+    driver: bridge

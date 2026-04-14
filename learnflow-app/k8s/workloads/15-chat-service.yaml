@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-service
+  namespace: boutique-shop
+  labels:
+    app.kubernetes.io/name: boutique-shop
+    app.kubernetes.io/component: chat-service
+spec:
+  type: ClusterIP
+  selector:
+    app: chat-service
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-service
+  namespace: boutique-shop
+  labels:
+    app.kubernetes.io/name: boutique-shop
+    app.kubernetes.io/component: chat-service
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: chat-service
+  template:
+    metadata:
+      labels:
+        app: chat-service
+    spec:
+      serviceAccountName: boutique-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: chat-service
+          image: boutique-chat-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: boutique-config
+            - secretRef:
+                name: boutique-secrets
+          env:
+            # OpenAI configuration for chat and embeddings
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: boutique-secrets
+                  key: OPENAI_API_KEY
+            # Qdrant RAG configuration
+            - name: QDRANT_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: boutique-config
+                  key: QDRANT_HOST
+            - name: QDRANT_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: boutique-config
+                  key: QDRANT_PORT
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 1
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false

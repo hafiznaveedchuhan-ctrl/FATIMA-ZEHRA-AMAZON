@@ -36,6 +36,17 @@ export const auth = {
   },
 
   /**
+   * Convenience: persist token + user in one call (used by login flow)
+   */
+  login: (token: string, user: any) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('auth_token', token)
+      localStorage.setItem('user_authenticated', 'true')
+      localStorage.setItem('user_data', JSON.stringify(user))
+    }
+  },
+
+  /**
    * Clear authentication data on logout
    */
   logout: () => {

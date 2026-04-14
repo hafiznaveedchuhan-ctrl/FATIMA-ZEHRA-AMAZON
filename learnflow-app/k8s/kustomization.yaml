@@ -1,0 +1,64 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: boutique-shop
+
+# Ordered resource deployment
+# Namespace first, then RBAC, config, storage, and finally workloads
+resources:
+  # Namespace
+  - 00-namespace.yaml
+
+  # RBAC (in order: SA → Role → RoleBinding)
+  - rbac/01-serviceaccount.yaml
+  - rbac/02-role.yaml
+  - rbac/03-rolebinding.yaml
+  - rbac/04-devuser-role.yaml
+  - rbac/05-devuser-rolebinding.yaml
+
+  # Configuration (ConfigMap and Secrets)
+  - config/06-configmap.yaml
+  - config/07-secrets.yaml
+
+  # Storage (PersistentVolumeClaims)
+  - storage/08-postgres-pvc.yaml
+  - storage/09-qdrant-pvc.yaml
+
+  # Workloads (Stateful first, then Deployments)
+  # Stateful services (database and vector DB must be ready first)
+  - workloads/10-postgres-statefulset.yaml
+  - workloads/11-qdrant-statefulset.yaml
+
+  # Backend services
+  - workloads/12-user-service.yaml
+  - workloads/13-product-service.yaml
+  - workloads/14-order-service.yaml
+  - workloads/15-chat-service.yaml
+
+  # Frontend and Gateway
+  - workloads/16-frontend.yaml
+  - workloads/17-nginx.yaml
+
+# Common labels applied to all resources
+commonLabels:
+  app.kubernetes.io/name: boutique-shop
+  app.kubernetes.io/version: "1.0.0"
+
+# Common annotations
+commonAnnotations:
+  description: "Men's Boutique E-Commerce Platform - Kubernetes Deployment"
+  managed-by: "kustomize"
+
+# Replicas configuration (can override per deployment)
+replicas:
+  - name: user-service
+    count: 2
+  - name: product-service
+    count: 2
+  - name: order-service
+    count: 2
+  - name: chat-service
+    count: 2
+  - name: frontend
+    count: 2
+  - name: nginx
+    count: 2

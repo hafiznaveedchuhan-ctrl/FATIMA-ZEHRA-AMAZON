@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: boutique-shop
+  labels:
+    app.kubernetes.io/name: boutique-shop
+    app.kubernetes.io/component: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: boutique-shop
+  labels:
+    app.kubernetes.io/name: boutique-shop
+    app.kubernetes.io/component: frontend
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      serviceAccountName: boutique-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: frontend
+          image: boutique-frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: boutique-config
+          env:
+            # Next.js environment configuration
+            - name: NEXT_PUBLIC_API_URL
+              value: "http://nginx-service"
+            - name: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+              value: "pk_test_YOUR_KEY"  # Update with your Stripe publishable key
+            - name: NEXT_PUBLIC_WHATSAPP_NUMBER
+              value: "+92XXXXXXXXXX"  # Update with your WhatsApp number
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 1
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false

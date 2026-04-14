@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @keyframes rotate3D {
+        0% { transform: rotateY(0deg) rotateX(0deg); }
+        50% { transform: rotateY(180deg) rotateX(10deg); }
+        100% { transform: rotateY(360deg) rotateX(0deg); }
+      }
+
+      @keyframes shine {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+      }
+
+      .antique-bg {
+        fill: #f5f0dc;
+      }
+
+      .logo-text {
+        font-family: Georgia, serif;
+        font-size: 72px;
+        font-weight: bold;
+        fill: #b8860b;
+        text-anchor: middle;
+        filter: drop-shadow(3px 3px 6px rgba(100,80,60,0.5));
+        animation: rotate3D 4s infinite ease-in-out;
+      }
+
+      .subtitle {
+        font-family: Georgia, serif;
+        font-size: 32px;
+        fill: #8b4513;
+        text-anchor: middle;
+      }
+
+      .shine-effect {
+        fill: #d4af37;
+        opacity: 0.3;
+        animation: shine 2s infinite;
+      }
+
+      .border-rect {
+        fill: none;
+        stroke: #8b4513;
+        stroke-width: 3;
+      }
+    </style>
+  </defs>
+
+  <!-- Antique background -->
+  <rect class="antique-bg" width="800" height="400"/>
+
+  <!-- Border frame -->
+  <rect class="border-rect" x="10" y="10" width="780" height="380"/>
+  <rect class="border-rect" x="15" y="15" width="770" height="370" stroke="#b8860b" stroke-width="1"/>
+
+  <!-- Corner decorations -->
+  <circle cx="30" cy="30" r="10" fill="#b8860b" stroke="#8b4513"/>
+  <circle cx="770" cy="30" r="10" fill="#b8860b" stroke="#8b4513"/>
+  <circle cx="30" cy="370" r="10" fill="#b8860b" stroke="#8b4513"/>
+  <circle cx="770" cy="370" r="10" fill="#b8860b" stroke="#8b4513"/>
+
+  <!-- Main logo text with 3D animation -->
+  <text class="logo-text" x="400" y="120">MEN'S BOUTIQUE</text>
+
+  <!-- Shine effect -->
+  <ellipse class="shine-effect" cx="400" cy="100" rx="150" ry="30"/>
+
+  <!-- Decorative line -->
+  <line x1="200" y1="180" x2="600" y2="180" stroke="#8b4513" stroke-width="2"/>
+
+  <!-- Subtitle -->
+  <text class="subtitle" x="400" y="240">Premium Menswear Collection</text>
+
+  <!-- Decorative flourishes -->
+  <polygon points="200,300 210,310 200,320 190,310" fill="#b8860b" stroke="#8b4513"/>
+  <polygon points="400,300 410,310 400,320 390,310" fill="#b8860b" stroke="#8b4513"/>
+  <polygon points="600,300 610,310 600,320 590,310" fill="#b8860b" stroke="#8b4513"/>
+
+  <!-- Bottom text -->
+  <text class="subtitle" x="400" y="370" style="font-size: 18px;">Est. 2026</text>
+</svg>

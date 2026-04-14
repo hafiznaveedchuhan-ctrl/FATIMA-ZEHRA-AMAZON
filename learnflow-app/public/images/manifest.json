@@ -1,0 +1,370 @@
+{
+  "fancy-suits": [
+    {
+      "id": 1,
+      "filename": "fancy-suits-01.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\fancy-suits\\fancy-suits-01.webp",
+      "url": "/images/fancy-suits/fancy-suits-01.webp",
+      "size_kb": 1.74,
+      "description": "Premium black formal suit for weddings",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 2,
+      "filename": "fancy-suits-02.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\fancy-suits\\fancy-suits-02.webp",
+      "url": "/images/fancy-suits/fancy-suits-02.webp",
+      "size_kb": 1.81,
+      "description": "Navy blue tuxedo for special occasions",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 3,
+      "filename": "fancy-suits-03.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\fancy-suits\\fancy-suits-03.webp",
+      "url": "/images/fancy-suits/fancy-suits-03.webp",
+      "size_kb": 1.74,
+      "description": "Maroon formal suit for celebrations",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 4,
+      "filename": "fancy-suits-04.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\fancy-suits\\fancy-suits-04.webp",
+      "url": "/images/fancy-suits/fancy-suits-04.webp",
+      "size_kb": 1.74,
+      "description": "Black evening suit formal wear",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 5,
+      "filename": "fancy-suits-05.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\fancy-suits\\fancy-suits-05.webp",
+      "url": "/images/fancy-suits/fancy-suits-05.webp",
+      "size_kb": 1.74,
+      "description": "Navy formal dress suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 6,
+      "filename": "fancy-suits-06.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\fancy-suits\\fancy-suits-06.webp",
+      "url": "/images/fancy-suits/fancy-suits-06.webp",
+      "size_kb": 1.74,
+      "description": "Burgundy wedding suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 7,
+      "filename": "fancy-suits-07.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\fancy-suits\\fancy-suits-07.webp",
+      "url": "/images/fancy-suits/fancy-suits-07.webp",
+      "size_kb": 1.74,
+      "description": "Black tie formal suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 8,
+      "filename": "fancy-suits-08.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\fancy-suits\\fancy-suits-08.webp",
+      "url": "/images/fancy-suits/fancy-suits-08.webp",
+      "size_kb": 1.74,
+      "description": "Premium navy formal suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 9,
+      "filename": "fancy-suits-09.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\fancy-suits\\fancy-suits-09.webp",
+      "url": "/images/fancy-suits/fancy-suits-09.webp",
+      "size_kb": 1.81,
+      "description": "Elegant black wedding suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 10,
+      "filename": "fancy-suits-10.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\fancy-suits\\fancy-suits-10.webp",
+      "url": "/images/fancy-suits/fancy-suits-10.webp",
+      "size_kb": 1.74,
+      "description": "Classic formal tuxedo",
+      "dimensions": "800x1200"
+    }
+  ],
+  "shalwar-qameez": [
+    {
+      "id": 1,
+      "filename": "shalwar-qameez-01.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\shalwar-qameez\\shalwar-qameez-01.webp",
+      "url": "/images/shalwar-qameez/shalwar-qameez-01.webp",
+      "size_kb": 1.74,
+      "description": "Traditional white shalwar qameez",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 2,
+      "filename": "shalwar-qameez-02.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\shalwar-qameez\\shalwar-qameez-02.webp",
+      "url": "/images/shalwar-qameez/shalwar-qameez-02.webp",
+      "size_kb": 1.81,
+      "description": "Cream embroidered shalwar qameez",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 3,
+      "filename": "shalwar-qameez-03.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\shalwar-qameez\\shalwar-qameez-03.webp",
+      "url": "/images/shalwar-qameez/shalwar-qameez-03.webp",
+      "size_kb": 1.74,
+      "description": "Navy blue traditional qameez",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 4,
+      "filename": "shalwar-qameez-04.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\shalwar-qameez\\shalwar-qameez-04.webp",
+      "url": "/images/shalwar-qameez/shalwar-qameez-04.webp",
+      "size_kb": 1.74,
+      "description": "Light blue kurta pajama set",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 5,
+      "filename": "shalwar-qameez-05.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\shalwar-qameez\\shalwar-qameez-05.webp",
+      "url": "/images/shalwar-qameez/shalwar-qameez-05.webp",
+      "size_kb": 1.74,
+      "description": "Beige traditional shalwar suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 6,
+      "filename": "shalwar-qameez-06.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\shalwar-qameez\\shalwar-qameez-06.webp",
+      "url": "/images/shalwar-qameez/shalwar-qameez-06.webp",
+      "size_kb": 1.74,
+      "description": "Off-white elegant qameez",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 7,
+      "filename": "shalwar-qameez-07.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\shalwar-qameez\\shalwar-qameez-07.webp",
+      "url": "/images/shalwar-qameez/shalwar-qameez-07.webp",
+      "size_kb": 1.74,
+      "description": "Pale blue traditional wear",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 8,
+      "filename": "shalwar-qameez-08.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\shalwar-qameez\\shalwar-qameez-08.webp",
+      "url": "/images/shalwar-qameez/shalwar-qameez-08.webp",
+      "size_kb": 1.74,
+      "description": "Cream colored formal qameez",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 9,
+      "filename": "shalwar-qameez-09.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\shalwar-qameez\\shalwar-qameez-09.webp",
+      "url": "/images/shalwar-qameez/shalwar-qameez-09.webp",
+      "size_kb": 1.81,
+      "description": "White embroidered traditional suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 10,
+      "filename": "shalwar-qameez-10.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\shalwar-qameez\\shalwar-qameez-10.webp",
+      "url": "/images/shalwar-qameez/shalwar-qameez-10.webp",
+      "size_kb": 1.74,
+      "description": "Sky blue kurta pajama",
+      "dimensions": "800x1200"
+    }
+  ],
+  "cotton-suits": [
+    {
+      "id": 1,
+      "filename": "cotton-suits-01.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\cotton-suits\\cotton-suits-01.webp",
+      "url": "/images/cotton-suits/cotton-suits-01.webp",
+      "size_kb": 1.74,
+      "description": "Casual white cotton kurta suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 2,
+      "filename": "cotton-suits-02.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\cotton-suits\\cotton-suits-02.webp",
+      "url": "/images/cotton-suits/cotton-suits-02.webp",
+      "size_kb": 1.81,
+      "description": "Light gray cotton pajama set",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 3,
+      "filename": "cotton-suits-03.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\cotton-suits\\cotton-suits-03.webp",
+      "url": "/images/cotton-suits/cotton-suits-03.webp",
+      "size_kb": 1.74,
+      "description": "Cream cotton casual wear",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 4,
+      "filename": "cotton-suits-04.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\cotton-suits\\cotton-suits-04.webp",
+      "url": "/images/cotton-suits/cotton-suits-04.webp",
+      "size_kb": 1.74,
+      "description": "Beige cotton kurta",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 5,
+      "filename": "cotton-suits-05.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\cotton-suits\\cotton-suits-05.webp",
+      "url": "/images/cotton-suits/cotton-suits-05.webp",
+      "size_kb": 1.74,
+      "description": "Pale blue cotton suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 6,
+      "filename": "cotton-suits-06.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\cotton-suits\\cotton-suits-06.webp",
+      "url": "/images/cotton-suits/cotton-suits-06.webp",
+      "size_kb": 1.74,
+      "description": "Khaki cotton kurta pajama",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 7,
+      "filename": "cotton-suits-07.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\cotton-suits\\cotton-suits-07.webp",
+      "url": "/images/cotton-suits/cotton-suits-07.webp",
+      "size_kb": 1.74,
+      "description": "Off-white casual cotton wear",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 8,
+      "filename": "cotton-suits-08.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\cotton-suits\\cotton-suits-08.webp",
+      "url": "/images/cotton-suits/cotton-suits-08.webp",
+      "size_kb": 1.74,
+      "description": "Light purple cotton suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 9,
+      "filename": "cotton-suits-09.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\cotton-suits\\cotton-suits-09.webp",
+      "url": "/images/cotton-suits/cotton-suits-09.webp",
+      "size_kb": 1.81,
+      "description": "Sand-colored cotton kurta",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 10,
+      "filename": "cotton-suits-10.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\cotton-suits\\cotton-suits-10.webp",
+      "url": "/images/cotton-suits/cotton-suits-10.webp",
+      "size_kb": 1.74,
+      "description": "White comfort cotton pajama",
+      "dimensions": "800x1200"
+    }
+  ],
+  "designer-brands": [
+    {
+      "id": 1,
+      "filename": "designer-brands-01.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\designer-brands\\designer-brands-01.webp",
+      "url": "/images/designer-brands/designer-brands-01.webp",
+      "size_kb": 1.74,
+      "description": "Premium designer black blazer",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 2,
+      "filename": "designer-brands-02.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\designer-brands\\designer-brands-02.webp",
+      "url": "/images/designer-brands/designer-brands-02.webp",
+      "size_kb": 1.81,
+      "description": "Luxury navy designer suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 3,
+      "filename": "designer-brands-03.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\designer-brands\\designer-brands-03.webp",
+      "url": "/images/designer-brands/designer-brands-03.webp",
+      "size_kb": 1.74,
+      "description": "High-end black dress suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 4,
+      "filename": "designer-brands-04.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\designer-brands\\designer-brands-04.webp",
+      "url": "/images/designer-brands/designer-brands-04.webp",
+      "size_kb": 1.74,
+      "description": "Designer burgundy formal wear",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 5,
+      "filename": "designer-brands-05.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\designer-brands\\designer-brands-05.webp",
+      "url": "/images/designer-brands/designer-brands-05.webp",
+      "size_kb": 1.74,
+      "description": "Premium charcoal suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 6,
+      "filename": "designer-brands-06.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\designer-brands\\designer-brands-06.webp",
+      "url": "/images/designer-brands/designer-brands-06.webp",
+      "size_kb": 1.74,
+      "description": "Luxury black evening suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 7,
+      "filename": "designer-brands-07.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\designer-brands\\designer-brands-07.webp",
+      "url": "/images/designer-brands/designer-brands-07.webp",
+      "size_kb": 1.74,
+      "description": "Designer navy blazer",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 8,
+      "filename": "designer-brands-08.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\designer-brands\\designer-brands-08.webp",
+      "url": "/images/designer-brands/designer-brands-08.webp",
+      "size_kb": 1.74,
+      "description": "Premium formal black suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 9,
+      "filename": "designer-brands-09.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\designer-brands\\designer-brands-09.webp",
+      "url": "/images/designer-brands/designer-brands-09.webp",
+      "size_kb": 1.81,
+      "description": "Designer charcoal formal suit",
+      "dimensions": "800x1200"
+    },
+    {
+      "id": 10,
+      "filename": "designer-brands-10.webp",
+      "filepath": "D:\\HACKATON-III\\Reusable-ecommerce-shop\\learnflow-app\\public\\images\\designer-brands\\designer-brands-10.webp",
+      "url": "/images/designer-brands/designer-brands-10.webp",
+      "size_kb": 1.74,
+      "description": "Luxury black suit formal",
+      "dimensions": "800x1200"
+    }
+  ]
+}

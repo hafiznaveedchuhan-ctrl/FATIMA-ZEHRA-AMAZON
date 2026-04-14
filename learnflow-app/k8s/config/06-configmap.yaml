@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: boutique-config
+  namespace: boutique-shop
+  labels:
+    app.kubernetes.io/name: boutique-shop
+data:
+  # PostgreSQL Configuration
+  POSTGRES_DB: "boutique_shop"
+  POSTGRES_USER: "postgres"
+  POSTGRES_HOST: "postgres-service"
+  POSTGRES_PORT: "5432"
+
+  # Qdrant Configuration
+  QDRANT_HOST: "qdrant-service"
+  QDRANT_PORT: "6333"
+
+  # Service URLs (internal DNS)
+  PRODUCT_SERVICE_URL: "http://product-service:8000"
+  USER_SERVICE_URL: "http://user-service:8000"
+  ORDER_SERVICE_URL: "http://order-service:8000"
+  CHAT_SERVICE_URL: "http://chat-service:8000"
+
+  # Application Configuration
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "info"
+
+  # Optional: WhatsApp Configuration
+  # NEXT_PUBLIC_WHATSAPP_NUMBER will be set via env in deployments

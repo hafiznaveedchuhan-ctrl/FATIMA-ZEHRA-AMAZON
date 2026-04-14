@@ -1,0 +1,350 @@
+# Sentry Configuration for Production Error Tracking
+# Men's Boutique E-Commerce Platform
+
+# ============================================================================
+# Sentry Integration Configuration
+# ============================================================================
+
+sentry:
+  # DSN (Data Source Name) - Set via environment variable
+  dsn: ${SENTRY_DSN}
+
+  # Environment identification
+  environment: production
+  release: ${GIT_COMMIT:latest}
+  dist: ${DEPLOYMENT_REGION:us-east}
+
+  # Sample rates for performance monitoring
+  traces_sample_rate: 0.1  # Capture 10% of transactions
+  profiles_sample_rate: 0.01  # Capture 1% of profiles
+
+  # Errors to always capture
+  attach_stacktrace: true
+  with_locals: true
+  include_source_context: true
+
+  # Integration settings
+  integrations:
+    - name: fastapi
+      enabled: true
+    - name: sqlalchemy
+      enabled: true
+    - name: redis
+      enabled: true
+    - name: httpx
+      enabled: true
+    - name: logging
+      enabled: true
+      level: WARNING
+
+  # Error filtering (prevent noise)
+  before_send: |
+    def before_send(event, hint):
+      # Ignore health check 404s
+      if event['request']['url'].endswith('/health'):
+        return None
+      # Ignore 5xx errors from external services
+      if event['request']['url'].contains('external'):
+        if event['response'].status >= 500:
+          return None
+      return event
+
+  # Breadcrumb filtering
+  before_breadcrumb: |
+    def before_breadcrumb(breadcrumb, hint):
+      # Ignore database query breadcrumbs for read operations
+      if breadcrumb['category'] == 'query':
+        if 'SELECT' in breadcrumb['message']:
+          return None
+      return breadcrumb
+
+# ============================================================================
+# Monitoring & Alerting Rules
+# ============================================================================
+
+alerts:
+  # Alert when error rate exceeds threshold
+  - name: "High Error Rate"
+    condition: "error_rate > 0.01"  # 1%
+    threshold: 5  # consecutive checks
+    severity: critical
+    notify: ["slack", "pagerduty"]
+
+  # Alert on performance degradation
+  - name: "Slow API Response"
+    condition: "p95_latency > 500"  # ms
+    threshold: 3  # consecutive checks
+    severity: warning
+    notify: ["slack"]
+
+  # Alert on payment failures
+  - name: "Payment Processing Errors"
+    condition: "error_rate_by_endpoint['/api/v1/payments'] > 0.005"
+    threshold: 2
+    severity: critical
+    notify: ["slack", "email"]
+
+  # Alert on database connection issues
+  - name: "Database Connection Issues"
+    condition: "db_connection_errors > 5"
+    threshold: 1
+    severity: critical
+    notify: ["pagerduty"]
+
+  # Alert on memory usage
+  - name: "High Memory Usage"
+    condition: "memory_usage > 85"  # %
+    threshold: 10  # consecutive checks
+    severity: warning
+    notify: ["slack"]
+
+  # Alert on API gateway errors
+  - name: "API Gateway Errors"
+    condition: "http_status_5xx > 10"  # count per minute
+    threshold: 2
+    severity: critical
+    notify: ["pagerduty", "slack"]
+
+# ============================================================================
+# Dashboard Metrics
+# ============================================================================
+
+dashboards:
+  # System health dashboard
+  system:
+    title: "System Health"
+    update_interval: 60  # seconds
+    panels:
+      - title: "Service Status"
+        metric: "services.status"
+        type: "status"
+      - title: "Error Rate"
+        metric: "errors.rate"
+        type: "timeseries"
+      - title: "Response Time (p95)"
+        metric: "http.response_time_p95"
+        type: "graph"
+      - title: "Database Connections"
+        metric: "db.connections.active"
+        type: "gauge"
+      - title: "Memory Usage"
+        metric: "system.memory.usage_percent"
+        type: "gauge"
+      - title: "CPU Usage"
+        metric: "system.cpu.usage_percent"
+        type: "gauge"
+
+  # Business metrics dashboard
+  business:
+    title: "Business Metrics"
+    update_interval: 300  # 5 minutes
+    panels:
+      - title: "Transactions Processed"
+        metric: "payments.success_count"
+        type: "counter"
+      - title: "Payment Success Rate"
+        metric: "payments.success_rate"
+        type: "gauge"
+      - title: "Cart Abandonment"
+        metric: "cart.abandonment_rate"
+        type: "gauge"
+      - title: "Chat Sessions"
+        metric: "chat.active_sessions"
+        type: "counter"
+      - title: "Product Views"
+        metric: "products.views_count"
+        type: "counter"
+      - title: "User Registrations"
+        metric: "users.registrations_count"
+        type: "counter"
+
+  # Performance dashboard
+  performance:
+    title: "Performance Analytics"
+    update_interval: 60  # seconds
+    panels:
+      - title: "API Latency Breakdown"
+        metrics:
+          - name: "products_api_latency"
+            label: "Product Service"
+          - name: "orders_api_latency"
+            label: "Order Service"
+          - name: "chat_api_latency"
+            label: "Chat Service"
+        type: "stackedarea"
+      - title: "Throughput (req/s)"
+        metric: "http.requests_per_second"
+        type: "timeseries"
+      - title: "Error Budget Remaining"
+        metric: "slo.error_budget_percent"
+        type: "gauge"
+      - title: "Database Query Time"
+        metric: "db.query_time_p95"
+        type: "timeseries"
+      - title: "Cache Hit Rate"
+        metric: "cache.hit_rate"
+        type: "gauge"
+
+# ============================================================================
+# Incident Response Automation
+# ============================================================================
+
+incident_response:
+  # Auto-create incidents on critical errors
+  auto_create_incidents:
+    - error_pattern: "payment_failure"
+      severity: critical
+      assignee: "on-call-engineer"
+    - error_pattern: "database_error"
+      severity: critical
+      assignee: "database-team"
+    - error_pattern: "auth_failure"
+      severity: high
+      assignee: "security-team"
+
+  # Auto-notify on escalation
+  escalation_policy:
+    - level: 1
+      wait_time: 15  # minutes
+      notify: ["slack-channel"]
+    - level: 2
+      wait_time: 30  # minutes
+      notify: ["pagerduty", "email"]
+    - level: 3
+      wait_time: 60  # minutes
+      notify: ["cto", "vp-engineering"]
+
+  # Post-incident actions
+  postmortem:
+    auto_create: true
+    template: "standard"
+    notify: ["engineering-team"]
+    due_date_days: 5
+
+# ============================================================================
+# Data Retention & Privacy
+# ============================================================================
+
+data_retention:
+  # Event retention
+  event_retention_days: 30
+
+  # Performance data
+  transaction_retention_days: 7
+  profile_retention_days: 7
+
+  # PII scrubbing (GDPR compliance)
+  scrub_pii: true
+  scrub_patterns:
+    - email
+    - phone_number
+    - credit_card
+    - ssn
+    - ip_address
+
+  # Custom data masking
+  custom_redactions:
+    - field: "stripe_token"
+      replacement: "[REDACTED_PAYMENT]"
+    - field: "jwt_token"
+      replacement: "[REDACTED_AUTH]"
+    - field: "password"
+      replacement: "[REDACTED_PASSWORD]"
+
+# ============================================================================
+# Integration with External Services
+# ============================================================================
+
+integrations:
+  # Slack integration
+  slack:
+    enabled: true
+    workspace: "your-workspace"
+    channel: "#production-alerts"
+    webhook_url: ${SLACK_WEBHOOK_URL}
+    mention_on_critical: ["@here"]
+
+  # PagerDuty integration
+  pagerduty:
+    enabled: true
+    integration_key: ${PAGERDUTY_INTEGRATION_KEY}
+    auto_resolve_timeout: 3600  # seconds
+
+  # GitHub integration
+  github:
+    enabled: true
+    repo: "NAVEED261/Reusable-shop"
+    auto_create_issues: true
+    issue_labels: ["bug", "production"]
+
+  # Datadog (optional)
+  datadog:
+    enabled: false
+    api_key: ${DATADOG_API_KEY}
+    app_key: ${DATADOG_APP_KEY}
+
+# ============================================================================
+# Custom Instrumentation
+# ============================================================================
+
+custom_metrics:
+  # Track payment processing
+  - name: "payment.processing_time"
+    type: "histogram"
+    unit: "milliseconds"
+    help: "Time taken to process payment"
+
+  # Track RAG search performance
+  - name: "rag.search_latency"
+    type: "histogram"
+    unit: "milliseconds"
+    help: "Time taken for RAG similarity search"
+
+  # Track message queue length
+  - name: "queue.length"
+    type: "gauge"
+    help: "Number of messages in queue"
+
+  # Track chat sessions
+  - name: "chat.sessions_active"
+    type: "gauge"
+    help: "Number of active chat sessions"
+
+# ============================================================================
+# Report Generation
+# ============================================================================
+
+reports:
+  # Daily digest
+  daily:
+    enabled: true
+    time: "09:00"  # 9 AM
+    timezone: "UTC"
+    recipients: ["team@yourdomain.com"]
+    content:
+      - top_errors
+      - performance_summary
+      - slo_status
+
+  # Weekly summary
+  weekly:
+    enabled: true
+    day: "monday"
+    time: "09:00"
+    recipients: ["management@yourdomain.com"]
+    content:
+      - error_trends
+      - performance_trends
+      - incident_summary
+      - slo_trend
+
+  # Monthly review
+  monthly:
+    enabled: true
+    day: "1"
+    recipients: ["engineering-leads@yourdomain.com"]
+    content:
+      - error_rate_analysis
+      - performance_optimization_opportunities
+      - slo_achievement
+      - recommendations

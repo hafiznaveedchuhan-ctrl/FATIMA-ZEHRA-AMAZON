@@ -1,4 +1,3 @@
-
 # Environment files with secrets (NEVER commit)
 .env
 .env.local
@@ -6,3 +5,45 @@
 **/.env
 **/.env.local
 **/.env.backend
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Node
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Test artifacts
+test-reports/
+test-results/
+playwright-report/
+coverage/
+
+# Misc
+.DS_Store
+*.log
+*.swp
+.vscode/
+.idea/
+
+# Random binary/image artifacts in app folder
+learnflow-app/app/download*.jpg
+learnflow-app/app/download*.png
+learnflow-app/test_db_connection.py
+
+# Old duplicate workflow location (root .github/workflows is canonical)
+learnflow-app/.github/
+
+# Stray top-level Dockerfiles (canonical ones live under app/backend/<svc>/Dockerfile)
+learnflow-app/Dockerfile.product-service
+learnflow-app/Dockerfile.user-service

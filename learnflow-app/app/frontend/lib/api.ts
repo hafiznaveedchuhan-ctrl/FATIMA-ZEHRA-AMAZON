@@ -25,25 +25,18 @@ const createApiClient = (baseURL: string): AxiosInstance => {
 export const userAPI = {
   client: createApiClient(USER_SERVICE_URL),
 
-  register: async (email: string, password: string, full_name: string) => {
+  register: async (data: { email: string; password: string; full_name: string }) => {
     try {
-      const response = await userAPI.client.post('/api/users/register', {
-        email,
-        password,
-        full_name,
-      })
+      const response = await userAPI.client.post('/api/users/register', data)
       return response.data
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Registration failed')
     }
   },
 
-  login: async (email: string, password: string) => {
+  login: async (data: { email: string; password: string }) => {
     try {
-      const response = await userAPI.client.post('/api/users/login', {
-        email,
-        password,
-      })
+      const response = await userAPI.client.post('/api/users/login', data)
       return response.data
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Login failed')
@@ -100,6 +93,16 @@ export const productAPI = {
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch categories')
     }
+  },
+
+  // Aliases used by FeaturedProducts/Categories components — return raw axios
+  // response so callers can read `.data.products` / `.data.categories`.
+  listProducts: async (filters?: any) => {
+    return productAPI.client.get('/api/products', { params: filters })
+  },
+
+  listCategories: async () => {
+    return productAPI.client.get('/api/categories')
   },
 }
 

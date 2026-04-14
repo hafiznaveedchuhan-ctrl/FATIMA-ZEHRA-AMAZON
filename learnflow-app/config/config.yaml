@@ -1,0 +1,356 @@
+# ============================================================================
+# LearnFlow App - Main Configuration
+# ============================================================================
+# Central configuration file for the application
+# Override with environment variables or .env file
+#
+# Priority: Environment Variables > .env file > config.yaml
+#
+# ============================================================================
+
+# Application Settings
+app:
+  name: learnflow-app
+  version: "1.0.0"
+  environment: ${ENVIRONMENT:-development}  # development, staging, production
+  debug: ${DEBUG:-true}
+  log_level: ${LOG_LEVEL:-INFO}
+
+# Database Configuration
+database:
+  provider: postgresql                       # postgresql, mysql, sqlite
+  connection_string: ${DATABASE_URL}
+
+  # Connection pooling
+  pool:
+    min_size: 5
+    max_size: 20
+    timeout_seconds: 30
+    idle_timeout_seconds: 300
+
+  # Migration settings
+  migration:
+    auto_run: true                           # Run migrations on startup
+    directory: database/migrations
+
+# API Configuration
+api:
+  # Services
+  services:
+    user_service:
+      url: ${USER_SERVICE_URL:-http://localhost:8001}
+      timeout: 30
+    product_service:
+      url: ${PRODUCT_SERVICE_URL:-http://localhost:8002}
+      timeout: 30
+    order_service:
+      url: ${ORDER_SERVICE_URL:-http://localhost:8003}
+      timeout: 30
+    chat_service:
+      url: ${CHAT_SERVICE_URL:-http://localhost:8004}
+      timeout: 30
+
+  # CORS
+  cors:
+    enabled: true
+    origins: ${CORS_ORIGINS:-http://localhost:3000}
+    credentials: true
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    headers:
+      - Content-Type
+      - Authorization
+
+# Authentication
+auth:
+  jwt:
+    secret: ${JWT_SECRET}
+    algorithm: HS256
+    expiration_hours: ${JWT_EXPIRATION:-24}
+
+  password:
+    min_length: 8
+    require_uppercase: true
+    require_digits: true
+    require_special_chars: true
+
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    requests_per_minute: 100
+
+# AI Integration
+ai:
+  model: ${AI_MODEL:-openai}                 # openai, gemini, goose, custom
+
+  # OpenAI Configuration
+  openai:
+    api_key: ${OPENAI_API_KEY}
+    model: gpt-4o                            # gpt-4o, gpt-4, gpt-3.5-turbo
+    temperature: 0.7
+    max_tokens: 2048
+    timeout: 30
+
+  # Google Gemini Configuration
+  gemini:
+    api_key: ${GEMINI_API_KEY}
+    model: gemini-pro
+    temperature: 0.7
+    max_tokens: 2048
+
+  # Goose Configuration
+  goose:
+    api_key: ${GOOSE_API_KEY}
+    model: goose-advanced
+    temperature: 0.7
+    max_tokens: 2048
+
+# Frontend Configuration
+frontend:
+  url: ${NEXT_PUBLIC_API_URL:-http://localhost:3000}
+  site_name: ${NEXT_PUBLIC_SITE_NAME:-Fatima Zehra Boutique}
+
+  # Static export for GitHub Pages
+  static_export: true
+
+  # Image optimization
+  images:
+    unoptimized: false
+    formats:
+      - webp
+      - jpeg
+    sizes:
+      - 640
+      - 750
+      - 828
+      - 1080
+      - 1200
+      - 1920
+      - 2048
+      - 3840
+
+# Email Configuration (Optional)
+email:
+  enabled: false
+  provider: smtp                             # smtp, sendgrid, mailgun
+
+  smtp:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT:-587}
+    use_tls: true
+    username: ${SMTP_USER}
+    password: ${SMTP_PASSWORD}
+    from: ${SMTP_FROM}
+
+  sendgrid:
+    api_key: ${SENDGRID_API_KEY}
+    from: noreply@fatima-zehra-boutique.com
+
+# Payment Configuration (Optional)
+payment:
+  enabled: false
+  provider: stripe                           # stripe, paypal
+
+  stripe:
+    api_key: ${STRIPE_API_KEY}
+    webhook_secret: ${STRIPE_WEBHOOK_SECRET}
+
+  paypal:
+    client_id: ${PAYPAL_CLIENT_ID}
+    client_secret: ${PAYPAL_CLIENT_SECRET}
+
+# Storage Configuration (Optional)
+storage:
+  enabled: true
+  provider: local                            # local, s3, gcs, azure
+
+  local:
+    base_path: "./uploads"
+
+  s3:
+    bucket: ${AWS_S3_BUCKET}
+    region: ${AWS_S3_REGION}
+    access_key: ${AWS_ACCESS_KEY_ID}
+    secret_key: ${AWS_SECRET_ACCESS_KEY}
+
+# Monitoring & Logging
+monitoring:
+  # Sentry error tracking
+  sentry:
+    enabled: false
+    dsn: ${SENTRY_DSN}
+
+  # Prometheus metrics
+  prometheus:
+    enabled: true
+    port: 9090
+    endpoint: /metrics
+
+  # DataDog
+  datadog:
+    enabled: false
+    api_key: ${DATADOG_API_KEY}
+
+  # Logs
+  logging:
+    format: json                             # json, text
+    output: console                          # console, file, both
+    file_path: ./logs/app.log
+    level: ${LOG_LEVEL:-INFO}
+
+# Security
+security:
+  # HTTPS/SSL
+  https:
+    enabled: true
+    # In production, set these:
+    # cert_path: /etc/ssl/certs/cert.pem
+    # key_path: /etc/ssl/private/key.pem
+
+  # Security headers
+  headers:
+    x_frame_options: DENY
+    x_content_type_options: nosniff
+    x_xss_protection: "1; mode=block"
+    strict_transport_security: "max-age=31536000; includeSubDomains"
+
+  # Secrets
+  secrets_path: ${SECRETS_PATH:-.env}
+
+# Feature Flags (Optional)
+features:
+  # Phase 1: Core Shopping
+  shopping:
+    enabled: true
+    user_registration: true
+    product_catalog: true
+    shopping_cart: true
+    checkout: true
+    order_history: true
+
+  # Phase 2: Chat
+  chat:
+    enabled: true
+    ai_recommendations: true
+    chat_history: true
+
+  # Phase 3: Experimental
+  experimental:
+    enabled: false
+    multi_language: false
+    recommendations_ml: false
+    personalization: false
+
+# Caching (Optional)
+caching:
+  enabled: true
+  provider: redis                            # redis, memcached, in-memory
+
+  redis:
+    host: ${REDIS_HOST:-localhost}
+    port: ${REDIS_PORT:-6379}
+    db: 0
+
+  ttl_seconds:
+    products: 3600
+    categories: 3600
+    user_profile: 300
+
+# Rate Limiting
+rate_limit:
+  enabled: true
+
+  # Redis-backed rate limiting
+  backend: redis
+
+  limits:
+    global: 1000/minute
+    per_ip: 100/minute
+    auth_attempts: 5/minute
+
+# Deployment
+deployment:
+  environment: ${ENVIRONMENT:-development}
+
+  # Docker
+  docker:
+    enabled: true
+    registry: ${DOCKER_REGISTRY:-ghcr.io}
+
+  # Kubernetes
+  kubernetes:
+    enabled: false
+    namespace: ${KUBERNETES_NAMESPACE:-default}
+    ingress_host: ${KUBERNETES_INGRESS_HOST}
+
+  # Helm
+  helm:
+    enabled: false
+    release_name: learnflow
+
+  # Netlify
+  netlify:
+    enabled: false
+    site_name: ${NETLIFY_SITE_NAME}
+
+# Performance
+performance:
+  # Request timeout (seconds)
+  request_timeout: 30
+
+  # Response compression
+  compression:
+    enabled: true
+    level: 6
+
+  # Database query timeout
+  db_query_timeout: 10
+
+  # Cache busting
+  cache_busting_version: "1.0.0"
+
+# ============================================================================
+# ENVIRONMENT-SPECIFIC OVERRIDES
+# ============================================================================
+# Uncomment the section for your environment
+
+# Development Environment
+development:
+  app.debug: true
+  app.log_level: DEBUG
+  database.provider: postgresql
+  security.https.enabled: false
+  monitoring.sentry.enabled: false
+
+# Staging Environment
+# staging:
+#   app.debug: false
+#   app.log_level: INFO
+#   security.https.enabled: true
+#   monitoring.sentry.enabled: true
+
+# Production Environment
+# production:
+#   app.debug: false
+#   app.log_level: WARNING
+#   security.https.enabled: true
+#   monitoring.sentry.enabled: true
+#   database.pool.min_size: 10
+#   database.pool.max_size: 50
+
+# ============================================================================
+# NOTES
+# ============================================================================
+#
+# 1. Environment variables override config.yaml
+# 2. .env file overrides this file
+# 3. Use ${VAR_NAME} syntax for environment variable substitution
+# 4. For sensitive values, use environment variables only
+# 5. Never commit this file with real credentials
+# 6. Use config/env/dev.yaml, staging.yaml, prod.yaml for environment-specific configs
+#
+# ============================================================================

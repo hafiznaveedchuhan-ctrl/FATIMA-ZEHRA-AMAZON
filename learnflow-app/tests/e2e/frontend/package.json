@@ -1,0 +1,17 @@
+{
+  "name": "fatima-zehra-boutique-e2e",
+  "version": "1.0.0",
+  "description": "Playwright E2E tests for Fatima Zehra Boutique",
+  "private": true,
+  "scripts": {
+    "test": "npx playwright test",
+    "test:chromium": "npx playwright test --project=chromium",
+    "test:headed": "npx playwright test --headed --project=chromium",
+    "test:debug": "npx playwright test --debug --project=chromium",
+    "test:ui": "npx playwright test --ui",
+    "report": "npx playwright show-report ../../../test-reports/playwright"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  }
+}

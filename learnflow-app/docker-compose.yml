@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: boutique-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-boutique_shop}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Qdrant Vector Database
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: boutique-qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  # User Service
+  user-service:
+    build: ./app/backend/user-service  # Short version
+    container_name: boutique-user-service
+    ports:
+      - "8001:8000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-boutique_shop}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Product Service
+  product-service:
+    build: ./app/backend/product-service
+    container_name: boutique-product-service
+    ports:
+      - "8002:8000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-boutique_shop}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Order Service
+  order-service:
+    build: ./app/backend/order-service
+    container_name: boutique-order-service
+    ports:
+      - "8003:8000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-boutique_shop}
+      PRODUCT_SERVICE_URL: http://product-service:8000
+    depends_on:
+      - postgres
+      - product-service
+
+  # Chat Service
+  chat-service:
+    build: ./app/backend/chat-service
+    container_name: boutique-chat-service
+    ports:
+      - "8004:8000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-boutique_shop}
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    depends_on:
+      - postgres
+      - qdrant
+
+  # Frontend
+  frontend:
+    build: ./app/frontend
+    container_name: boutique-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+      - chat-service
+
+  # NGINX Gateway
+  nginx:
+    image: nginx:alpine # Agar custom build nahi chal rahi to direct ye use karein
+    container_name: boutique-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - user-service
+
+volumes:
+  postgres_data:
+  qdrant_data:
