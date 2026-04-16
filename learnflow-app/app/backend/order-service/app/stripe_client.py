@@ -67,10 +67,9 @@ class StripePaymentClient:
                 amount=amount_paisa,
                 currency=CURRENCY,
                 description=description or f"Order #{order_id}",
-                customer_email=customer_email,
                 metadata=intent_metadata,
                 automatic_payment_methods={"enabled": True},
-                receipt_email=customer_email
+                receipt_email=customer_email,
             )
 
             logger.info(

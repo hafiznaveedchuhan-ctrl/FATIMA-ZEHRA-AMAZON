@@ -12,6 +12,7 @@ Requires:
 
 import os
 import sys
+from datetime import datetime
 import requests
 import psycopg2
 from psycopg2.extras import execute_values
@@ -196,6 +197,8 @@ def seed():
             p["stock_quantity"],
             True,
             p["featured"],
+            datetime.utcnow(),
+            datetime.utcnow(),
         ))
 
     if skipped_cats:
@@ -211,7 +214,7 @@ def seed():
         cur,
         """
         INSERT INTO products
-            (name, description, price, category_id, image_url, stock_quantity, is_active, featured)
+            (name, description, price, category_id, image_url, stock_quantity, is_active, featured, created_at, updated_at)
         VALUES %s
         """,
         rows,

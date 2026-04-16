@@ -35,8 +35,26 @@ export default function CartPage() {
         throw new Error('Please fill in all fields')
       }
 
-      const apiUrl = process.env.NEXT_PUBLIC_ORDER_SERVICE_URL || '/api'
-      const token = localStorage.getItem('auth_token') || 'Bearer 1-test'
+      const base = process.env.NEXT_PUBLIC_ORDER_SERVICE_URL || ''
+      const apiUrl = `${base}/api`
+      const rawToken = localStorage.getItem('auth_token') || ''
+      const token = rawToken.startsWith('Bearer ') ? rawToken : `Bearer ${rawToken}`
+      const authHeader = { Authorization: token }
+
+      // Sync local Zustand cart to backend DB (backend checkout reads DB cart)
+      // Clear existing backend cart first to avoid stale duplicates
+      await axios.delete(`${apiUrl}/cart`, { headers: authHeader }).catch(() => {})
+      for (const item of items) {
+        await axios.post(
+          `${apiUrl}/cart/items`,
+          {
+            product_id: item.product.id,
+            quantity: item.quantity,
+            price: item.product.price,
+          },
+          { headers: authHeader }
+        )
+      }
 
       // Create order via checkout endpoint
       const checkoutResponse = await axios.post(
@@ -45,9 +63,7 @@ export default function CartPage() {
           shipping_address: shippingAddress,
         },
         {
-          headers: {
-            Authorization: token,
-          },
+          headers: authHeader,
         }
       )
 

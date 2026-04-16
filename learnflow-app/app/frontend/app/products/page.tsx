@@ -1,46 +1,121 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
-import { PRODUCTS, CATEGORIES } from "@/lib/products";
+import { productAPI } from "@/lib/api";
+import { useCartStore } from "@/lib/store";
 import { Search, Filter } from "lucide-react";
 
+interface APIProduct {
+  id: number;
+  name: string;
+  description?: string;
+  price: number | string;
+  image_url?: string;
+  category?: string | { id: number; name: string };
+  stock_quantity?: number;
+  featured?: boolean;
+  rating?: number;
+}
+
+interface APICategory {
+  id: number;
+  name: string;
+}
+
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams.get("category") || "";
+  const searchParam = searchParams.get("search") || "";
+
+  const [products, setProducts] = useState<APIProduct[]>([]);
+  const [categories, setCategories] = useState<APICategory[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
+  const [searchQuery, setSearchQuery] = useState(searchParam);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
   const [sortBy, setSortBy] = useState<"price-low" | "price-high" | "newest" | "rating">("newest");
+  const addItem = useCartStore((s) => s.addItem);
+
+  // Load products + categories from API
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [prodResp, catResp] = await Promise.all([
+          productAPI.getProducts({ limit: 100 }),
+          productAPI.getCategories(),
+        ]);
+        const prods = prodResp.products || prodResp || [];
+        setProducts(prods);
+        const cats = catResp.categories || catResp || [];
+        setCategories(cats);
+      } catch (e) {
+        console.error("Failed to load products:", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  // Sync search from URL
+  useEffect(() => {
+    if (searchParam) setSearchQuery(searchParam);
+  }, [searchParam]);
+
+  // Apply category from URL param
+  useEffect(() => {
+    if (categoryParam) {
+      // Try exact match first, then fuzzy
+      const exact = categories.find((c) => c.name === categoryParam);
+      if (exact) {
+        setSelectedCategory(exact.name);
+      } else {
+        const fuzzy = categories.find(
+          (c) => c.name.toLowerCase().replace(/[^a-z]/g, "").includes(categoryParam.toLowerCase().replace(/[^a-z]/g, ""))
+        );
+        if (fuzzy) setSelectedCategory(fuzzy.name);
+      }
+    }
+  }, [categoryParam, categories]);
+
+  const getCategoryName = (cat: string | { id: number; name: string } | undefined): string => {
+    if (!cat) return "";
+    return typeof cat === "string" ? cat : cat.name;
+  };
 
   const filteredProducts = useMemo(() => {
-    let filtered = PRODUCTS;
+    let filtered = [...products];
 
     if (selectedCategory !== "All") {
-      filtered = filtered.filter((p) => p.category === selectedCategory);
+      filtered = filtered.filter((p) => getCategoryName(p.category) === selectedCategory);
     }
 
     if (searchQuery) {
-      const query = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (p) =>
-          p.name.toLowerCase().includes(query) ||
-          p.description.toLowerCase().includes(query) ||
-          p.material.toLowerCase().includes(query)
+          p.name.toLowerCase().includes(q) ||
+          (p.description || "").toLowerCase().includes(q) ||
+          getCategoryName(p.category).toLowerCase().includes(q)
       );
     }
 
-    filtered = filtered.filter(
-      (p) => p.price >= priceRange[0] && p.price <= priceRange[1]
-    );
+    filtered = filtered.filter((p) => {
+      const price = Number(p.price);
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
 
     switch (sortBy) {
       case "price-low":
-        filtered.sort((a, b) => a.price - b.price);
+        filtered.sort((a, b) => Number(a.price) - Number(b.price));
         break;
       case "price-high":
-        filtered.sort((a, b) => b.price - a.price);
+        filtered.sort((a, b) => Number(b.price) - Number(a.price));
         break;
       case "rating":
-        filtered.sort((a, b) => b.rating - a.rating);
+        filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
       case "newest":
       default:
@@ -48,7 +123,32 @@ export default function ProductsPage() {
     }
 
     return filtered;
-  }, [selectedCategory, searchQuery, priceRange, sortBy]);
+  }, [products, selectedCategory, searchQuery, priceRange, sortBy]);
+
+  const handleAddToCart = (product: any) => {
+    const cartProduct = {
+      id: product.id,
+      name: product.name,
+      price: Number(product.price),
+      image: product.image || product.image_url || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600",
+      category: getCategoryName(product.category),
+      description: product.description || "",
+      rating: product.rating || 4.2,
+      inStock: true,
+    };
+    addItem(cartProduct, 1);
+    alert(`${product.name} added to cart!`);
+  };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
+        <div className="max-w-7xl mx-auto px-4 py-16 text-center text-gray-500">
+          Loading products...
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
@@ -58,7 +158,7 @@ export default function ProductsPage() {
             Shop Everything
           </h1>
           <p className="text-gray-600 dark:text-gray-400 max-w-2xl">
-            Discover {PRODUCTS.length}+ products across all categories at the best prices on Fatima Zehra Amazon Shop.
+            Discover {products.length}+ products across all categories at the best prices on Fatima Zehra Amazon Shop.
           </p>
         </div>
       </section>
@@ -83,9 +183,9 @@ export default function ProductsPage() {
                         : "hover:bg-gray-100 dark:hover:bg-gray-700"
                     }`}
                   >
-                    All Products ({PRODUCTS.length})
+                    All Products ({products.length})
                   </button>
-                  {CATEGORIES.map((category) => (
+                  {categories.map((category) => (
                     <button
                       key={category.id}
                       onClick={() => setSelectedCategory(category.name)}
@@ -96,7 +196,7 @@ export default function ProductsPage() {
                       }`}
                     >
                       {category.name} (
-                      {PRODUCTS.filter((p) => p.category === category.name).length})
+                      {products.filter((p) => getCategoryName(p.category) === category.name).length})
                     </button>
                   ))}
                 </div>
@@ -110,7 +210,7 @@ export default function ProductsPage() {
                   <input
                     type="range"
                     min="0"
-                    max="10000"
+                    max="50000"
                     step="500"
                     value={priceRange[0]}
                     onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])}
@@ -119,7 +219,7 @@ export default function ProductsPage() {
                   <input
                     type="range"
                     min="0"
-                    max="10000"
+                    max="50000"
                     step="500"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
@@ -156,7 +256,7 @@ export default function ProductsPage() {
                 onClick={() => {
                   setSelectedCategory("All");
                   setSearchQuery("");
-                  setPriceRange([0, 10000]);
+                  setPriceRange([0, 50000]);
                   setSortBy("newest");
                 }}
                 className="w-full py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
@@ -172,7 +272,7 @@ export default function ProductsPage() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
                   type="text"
-                  placeholder="Search by name, material, or category..."
+                  placeholder="Search by name or category..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="input-elegant pl-12 w-full"
@@ -196,7 +296,7 @@ export default function ProductsPage() {
                       animationDelay: `${index * 30}ms`,
                     }}
                   >
-                    <ProductCard product={product} />
+                    <ProductCard product={product} onAddToCart={handleAddToCart} />
                   </div>
                 ))}
               </div>

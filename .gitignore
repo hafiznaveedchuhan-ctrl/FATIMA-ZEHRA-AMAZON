@@ -47,3 +47,19 @@ learnflow-app/.github/
 # Stray top-level Dockerfiles (canonical ones live under app/backend/<svc>/Dockerfile)
 learnflow-app/Dockerfile.product-service
 learnflow-app/Dockerfile.user-service
+
+# Claude Code local state (not useful to other contributors)
+.claude/agents/
+.claude/skills/
+.claude/scheduled_tasks.lock
+.playwright-mcp/
+
+# Stray root-level package-lock (canonical one lives under learnflow-app/app/frontend/)
+/package-lock.json
+
+# Root-level raw E2E screenshots (curated copies live under docs/screenshots/)
+/e2e-*.png
+/github-*.png
+/stripe-*.png
+/chat-openai-reply.png
+/order-detail-success.png

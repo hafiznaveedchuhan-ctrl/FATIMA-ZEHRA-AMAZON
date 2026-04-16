@@ -8,13 +8,13 @@ import { useCartStore } from '@/lib/store'
 import { useAuthStore } from '@/lib/store'
 
 const CATEGORIES = [
-  { name: 'Electronics', href: '/products?category=electronics' },
-  { name: 'Fashion', href: '/products?category=fashion' },
-  { name: 'Home & Kitchen', href: '/products?category=home' },
-  { name: 'Books', href: '/products?category=books' },
-  { name: 'Toys & Games', href: '/products?category=toys' },
-  { name: 'Sports', href: '/products?category=sports' },
-  { name: 'Beauty', href: '/products?category=beauty' },
+  { name: 'Electronics', href: '/products?category=Electronics' },
+  { name: 'Fashion', href: '/products?category=Fashion' },
+  { name: 'Home & Kitchen', href: '/products?category=Home+%26+Kitchen' },
+  { name: 'Books', href: '/products?category=Books' },
+  { name: 'Toys & Games', href: '/products?category=Toys+%26+Games' },
+  { name: 'Sports & Outdoors', href: '/products?category=Sports+%26+Outdoors' },
+  { name: 'Beauty', href: '/products?category=Beauty' },
 ]
 
 export default function Navbar() {
@@ -22,8 +22,18 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryOpen, setCategoryOpen] = useState(false)
-  const cartCount = useCartStore((state) => state.itemCount)
+  const [mounted, setMounted] = useState(false)
+  const [cartCount, setCartCount] = useState(0)
   const { user } = useAuthStore()
+
+  useEffect(() => {
+    setMounted(true)
+    // Subscribe to cart store after mount to avoid hydration mismatch
+    const update = () => setCartCount(useCartStore.getState().getItemCount())
+    update()
+    const unsub = useCartStore.subscribe(update)
+    return () => unsub()
+  }, [])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -82,19 +92,19 @@ export default function Navbar() {
 
             {/* Account */}
             <Link
-              href={user ? '/profile' : '/auth/login'}
+              href={mounted && user ? '/profile' : '/auth/login'}
               className="hidden sm:flex items-center gap-1 text-white hover:text-yellow-200 transition"
             >
               <User size={20} />
               <span className="text-xs md:text-sm font-semibold">
-                {user ? 'Account' : 'Sign In'}
+                {mounted && user ? 'Account' : 'Sign In'}
               </span>
             </Link>
 
             {/* Cart */}
             <Link href="/cart" className="relative text-white hover:text-yellow-200 transition">
               <ShoppingCart size={24} />
-              {cartCount > 0 && (
+              {mounted && cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                   {cartCount > 99 ? '99+' : cartCount}
                 </span>
@@ -202,7 +212,7 @@ export default function Navbar() {
             >
               New Arrivals
             </Link>
-            {!user && (
+            {mounted && !user && (
               <Link
                 href="/auth/login"
                 onClick={() => setIsOpen(false)}

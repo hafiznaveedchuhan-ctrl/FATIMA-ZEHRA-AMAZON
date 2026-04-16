@@ -2,17 +2,43 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Product } from "@/lib/products";
 import { ShoppingCart, Heart, Star } from "lucide-react";
 import { useState } from "react";
+
+type Product = {
+  id: number;
+  name: string;
+  description?: string;
+  price: number | string;
+  originalPrice?: number;
+  image?: string;
+  image_url?: string;
+  category?: string | { id: number; name: string };
+  material?: string;
+  rating?: number;
+  reviews?: number;
+  inStock?: boolean;
+  stock_quantity?: number;
+};
 
 interface ProductCardProps {
   product: Product;
   onAddToCart?: (product: Product) => void;
 }
 
+const FALLBACK_IMG =
+  "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600";
+
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
+
+  const imgSrc = product.image || product.image_url || FALLBACK_IMG;
+  const inStock =
+    typeof product.inStock === "boolean"
+      ? product.inStock
+      : (product.stock_quantity ?? 0) > 0;
+  const rating = product.rating ?? 4.2;
+  const reviews = product.reviews ?? 0;
 
   const discountPercent = product.originalPrice
     ? Math.round(
@@ -26,8 +52,9 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
         {/* Product Image Container */}
         <div className="relative overflow-hidden bg-gray-100 dark:bg-gray-800 aspect-square">
           <Image
-            src={product.image}
+            src={imgSrc}
             alt={product.name}
+            unoptimized
             fill
             className="object-cover img-zoom transition-transform duration-500 hover:scale-110"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -41,7 +68,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           )}
 
           {/* In Stock Badge */}
-          {product.inStock && (
+          {inStock && (
             <div className="absolute top-3 left-3 bg-green-500/90 text-white px-3 py-1 rounded-full text-xs font-semibold">
               In Stock
             </div>
@@ -66,7 +93,11 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
         <div className="flex-1 p-4 flex flex-col">
           {/* Category Badge */}
           <div className="mb-2">
-            <span className="badge-pink text-xs">{product.category}</span>
+            <span className="badge-pink text-xs">
+              {typeof product.category === "string"
+                ? product.category
+                : product.category?.name ?? ""}
+            </span>
           </div>
 
           {/* Product Name */}
@@ -87,7 +118,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                   key={i}
                   size={14}
                   className={
-                    i < Math.floor(product.rating)
+                    i < Math.floor(rating)
                       ? "fill-current"
                       : "stroke-current fill-none"
                   }
@@ -95,21 +126,23 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
               ))}
             </div>
             <span className="text-xs text-gray-600 dark:text-gray-400 ml-1">
-              ({product.reviews} reviews)
+              ({reviews} reviews)
             </span>
           </div>
 
           {/* Material */}
-          <p className="text-xs text-gray-500 dark:text-gray-500 mb-3">
-            {product.material}
-          </p>
+          {product.material && (
+            <p className="text-xs text-gray-500 dark:text-gray-500 mb-3">
+              {product.material}
+            </p>
+          )}
 
           {/* Price Section - Flexed to bottom */}
           <div className="mt-auto">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-bold text-pink-600 dark:text-pink-400">
-                  Rs {product.price.toLocaleString()}
+                  Rs {Number(product.price).toLocaleString()}
                 </span>
                 {product.originalPrice && (
                   <span className="text-sm text-gray-500 line-through">
@@ -132,10 +165,8 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
             </button>
 
             {/* WhatsApp Button */}
-            <a
-              href="https://wa.me/03002385209"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -147,7 +178,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.272-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-5.031 1.378c-1.537.850-2.779 2.022-3.68 3.384-1.84 2.944-1.88 6.642-.108 9.742 1.868 3.12 5.37 5.066 9.319 5.066 1.697 0 3.308-.292 4.785-.87l3.421 1.128c.396.13.818-.042.995-.412l1.622-4.037c1.21-2.315 1.817-4.955 1.817-7.665 0-4.687-1.904-8.928-5.37-12.02-3.466-3.093-8.136-4.792-13.05-4.792z"/>
               </svg>
               WhatsApp Us
-            </a>
+            </button>
           </div>
         </div>
       </div>

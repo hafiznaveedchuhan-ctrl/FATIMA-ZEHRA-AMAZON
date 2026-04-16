@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { productAPI } from '@/lib/api'
+import { useCartStore } from '@/lib/store'
 import ProductCard from './ProductCard'
 
 interface Product {
@@ -17,6 +18,21 @@ interface Product {
 export default function FeaturedProducts() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const addItem = useCartStore((s) => s.addItem)
+
+  const handleAddToCart = (product: any) => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: Number(product.price),
+      image: product.image || product.image_url || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600',
+      category: typeof product.category === 'string' ? product.category : product.category?.name || '',
+      description: product.description || '',
+      rating: product.rating || 4.2,
+      inStock: true,
+    }, 1)
+    alert(`${product.name} added to cart!`)
+  }
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -51,7 +67,7 @@ export default function FeaturedProducts() {
         <p className="text-center text-gray-600 dark:text-gray-400 mb-12">Check out our best-selling items</p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
           ))}
         </div>
       </div>
